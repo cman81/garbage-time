@@ -1,17 +1,17 @@
 <?php
-  
-  function get_win_score($json, $team) {
-    $data = current(json_decode($json, TRUE));
-    
-    // determine whether we are home or away, return the score.
+  function get_primary_score ($json, $team) {
+    // this team won, return the score
     if ($data['home']['abbr'] == $team) {
-      return $data['home']['score']['T'];
+      if ($data['home']['score']['T'] > $data['away']['score']['T']) {
+        return $data['home']['score']['T'];
+      }
+    } else {
+      if ($data['away']['score']['T'] > $data['home']['score']['T']) {
+        return $data['away']['score']['T'];
+      }
     }
-    return $data['away']['score']['T'];
-  }
-  
-  function get_lose_score($json, $team) {
-    $data = current(json_decode($json, TRUE));
+    
+    // this team tied or lost, only score 7/pts per touchdown
     $score = 0;
     
     foreach ($data['scrsummary'] as $key => $value) {
